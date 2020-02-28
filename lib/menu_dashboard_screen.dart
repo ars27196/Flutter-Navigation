@@ -1,63 +1,119 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:navigation_app/bottom_bar_view/tabbar_manager.dart';
+import 'package:navigation_app/drawer/STDrawer.dart';
+import 'package:navigation_app/utils/stcolors.dart';
+import 'package:navigation_app/utils/sttheme.dart';
 
-class MenuDashboard extends StatelessWidget {
+class MenuDashboard extends StatefulWidget {
+/*
+  Widget menu(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("Dashboard", style: TextStyle(color: Colors.white, fontSize: 22)),
+        SizedBox(height: 10),
+        Text("Message", style: TextStyle(color: Colors.white, fontSize: 22)),
+        SizedBox(height: 10),
+        Text("Utility Bills",
+            style: TextStyle(color: Colors.white, fontSize: 22)),
+        SizedBox(height: 10),
+        Text("Funds Transfer",
+            style: TextStyle(color: Colors.white, fontSize: 22)),
+        SizedBox(height: 10),
+        Text("Branches", style: TextStyle(color: Colors.white, fontSize: 22))
+      ],
+    );
+  }
+
+*/
+
+  @override
+  State<StatefulWidget> createState() {
+    return DashboardState();
+  }
+}
+
+class DashboardState extends State {
   Color backgroundColor = Color(0xFF4A4A58);
+  TabBarScreenManager tabBarScreenManager = new TabBarScreenManager();
+
+  @override
+  void initState() {
+    tabBarScreenManager.initState(this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-      backgroundColor: backgroundColor,
-      drawer: menu(context),
-      body: Stack(
-        children: <Widget>[
-          dashboardHome(context),
-        ],
+        backgroundColor: backgroundColor,
+        drawer: STDrawer(),
+        appBar: AppBar(
+          title: Text("Navigation"),
+          centerTitle: true,
+        ),
+        body: DefaultTabController(
+          length: 5,
+          initialIndex: 0,
+          child: Scaffold(
+            body: _tabBarView(),
+            bottomNavigationBar: _tabBarWidget(),
+          ),
+        ));
+  }
+
+  _tabBarView() {
+    return TabBarView(
+      physics: NeverScrollableScrollPhysics(),
+      children: tabBarScreenManager.screenDataModel.tabbarItems,
+    );
+  }
+
+  Widget _tabBarWidget() {
+    return Container(
+      child: TabBar(
+        tabs: bottomTabBarItems,
       ),
     );
   }
 
-  Widget menu(BuildContext context) {
-    return  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Dashboard", style: TextStyle(color: Colors.white, fontSize: 22)),
-          SizedBox(height: 10),
-          Text("Message", style: TextStyle(color: Colors.white, fontSize: 22)),
-          SizedBox(height: 10),
-          Text("Utility Bills",
-              style: TextStyle(color: Colors.white, fontSize: 22)),
-          SizedBox(height: 10),
-          Text("Funds Transfer",
-              style: TextStyle(color: Colors.white, fontSize: 22)),
-          SizedBox(height: 10),
-          Text("Branches", style: TextStyle(color: Colors.white, fontSize: 22))
-        ],
-
-    );
+  List<Widget> get bottomTabBarItems {
+    return [
+      _tab("Home", "assets/icons/home/home.png"),
+      _tab("Work Plan", "assets/icons/work/work.png"),
+      _tab("Attendance", "assets/icons/attendance/attendance.png"),
+      _tab("Orders", "assets/icons/setting/settings.png"),
+      _tab("More", "assets/icons/setting/settings.png")
+    ];
   }
 
-  Widget dashboardHome(BuildContext context) {
-    return Material(
-        elevation: 8,
-        color: backgroundColor,
-        child: Container(
-          padding: EdgeInsets.only(left: 10, top: 38),
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Icon(Icons.menu, color: Colors.white),
-                  Text("My Cards",
-                      style: TextStyle(color: Colors.white, fontSize: 24)),
-                  Icon(Icons.settings, color: Colors.white)
-                ],
-              )
-            ],
-          ),
+  _tab(String tabTitle, String imagePath) {
+    return Container(
+      height: 73,
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(
+                    color: STColors.appBlackLight
+                )
+            )
+        ),
+        child: Column(
+         children: <Widget>[
+            Container(
+              child: Center(
+                child: Tab(
+                  child: Text(tabTitle, style: TextStyle(color: Colors.black,
+                  fontSize: 10),),
+                  icon: ImageIcon(
+                    AssetImage(imagePath),
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ));
   }
 }
